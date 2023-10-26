@@ -1,7 +1,17 @@
+FROM node:18.18.2-alpine3.18 as front-builder
+LABEL stage=front-builder
+RUN npm install -g pnpm
+WORKDIR /app/
+COPY ./alist-web/package.json ./alist-web/pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
+COPY ./alist-web/ .
+RUN pnpm i18n:build && pnpm build
+
 FROM alpine:3.18 as builder
 LABEL stage=go-builder
 WORKDIR /app/
 COPY ./ ./
+COPY --from=front-builder /app/dist ./public/dist
 RUN apk add --no-cache bash curl gcc git go musl-dev; \
     bash build.sh release docker
 
