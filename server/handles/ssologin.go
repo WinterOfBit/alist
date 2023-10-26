@@ -289,9 +289,11 @@ func SSOLoginCallback(c *gin.Context) {
 		return
 	}
 	argument := c.Query("method")
-	if usecompatibility {
-		argument = path.Base(c.Request.URL.Path)
-	}
+	/*
+		if usecompatibility {
+				argument = path.Base(c.Request.URL.Path)
+			}
+	*/
 	if !utils.SliceContains([]string{"get_sso_id", "sso_get_token"}, argument) {
 		common.ErrorResp(c, errors.New("invalid request"), 500)
 		return
