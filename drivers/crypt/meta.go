@@ -7,8 +7,8 @@ import (
 
 type Addition struct {
 	// Usually one of two
-	//driver.RootPath
-	//driver.RootID
+	// driver.RootPath
+	// driver.RootID
 	// define other
 
 	FileNameEnc string `json:"filename_encryption" type:"select" required:"true" options:"off,standard,obfuscate" default:"off"`
@@ -20,7 +20,7 @@ type Addition struct {
 	EncryptedSuffix  string `json:"encrypted_suffix" required:"true" default:".bin" help:"for advanced user only! encrypted files will have this suffix"`
 	FileNameEncoding string `json:"filename_encoding" type:"select" required:"true" options:"base64,base32,base32768" default:"base64" help:"for advanced user only!"`
 
-	Thumbnail   bool   `json:"thumbnail" required:"true" default:"false" help:"enable thumbnail which pre-generated under .thumbnails folder"`
+	Thumbnail bool `json:"thumbnail" required:"true" default:"false" help:"enable thumbnail which pre-generated under .thumbnails folder"`
 }
 
 var config = driver.Config{

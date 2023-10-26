@@ -241,7 +241,7 @@ func (d *Yun139) Remove(ctx context.Context, obj model.Obj) error {
 }
 
 const (
-	_  = iota //ignore first value by assigning to blank identifier
+	_  = iota // ignore first value by assigning to blank identifier
 	KB = 1 << (10 * iota)
 	MB
 	GB
@@ -301,7 +301,7 @@ func (d *Yun139) Put(ctx context.Context, dstDir model.Obj, stream model.FileStr
 	// Progress
 	p := driver.NewProgress(stream.GetSize(), up)
 
-	var partSize = getPartSize(stream.GetSize())
+	partSize := getPartSize(stream.GetSize())
 	part := (stream.GetSize() + partSize - 1) / partSize
 	if part == 0 {
 		part = 1

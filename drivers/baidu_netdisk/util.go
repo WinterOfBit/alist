@@ -149,7 +149,7 @@ func (d *BaiduNetdisk) linkOfficial(file model.Obj, args model.LinkArgs) (*model
 	if err != nil {
 		return nil, err
 	}
-	//if res.StatusCode() == 302 {
+	// if res.StatusCode() == 302 {
 	u = res.Header().Get("location")
 	//}
 

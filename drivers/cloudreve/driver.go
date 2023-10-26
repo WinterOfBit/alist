@@ -141,7 +141,7 @@ func (d *Cloudreve) Put(ctx context.Context, dstDir model.Obj, stream model.File
 	if err != nil {
 		return err
 	}
-	var chunkSize = u.ChunkSize
+	chunkSize := u.ChunkSize
 	var buf []byte
 	var chunk int
 	for {

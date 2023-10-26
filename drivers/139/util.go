@@ -104,6 +104,7 @@ func (d *Yun139) request(pathname string, method string, callback base.ReqCallba
 	}
 	return res.Body(), nil
 }
+
 func (d *Yun139) post(pathname string, data interface{}, resp interface{}) ([]byte, error) {
 	return d.request(pathname, http.MethodPost, func(req *resty.Request) {
 		req.SetBody(data)
@@ -154,7 +155,7 @@ func (d *Yun139) getFiles(catalogID string) ([]model.Obj, error) {
 					HashInfo: utils.NewHashInfo(utils.MD5, content.Digest),
 				},
 				Thumbnail: model.Thumbnail{Thumbnail: content.ThumbnailURL},
-				//Thumbnail: content.BigthumbnailURL,
+				// Thumbnail: content.BigthumbnailURL,
 			}
 			files = append(files, &f)
 		}
@@ -218,7 +219,7 @@ func (d *Yun139) familyGetFiles(catalogID string) ([]model.Obj, error) {
 					Ctime:    getTime(content.CreateTime),
 				},
 				Thumbnail: model.Thumbnail{Thumbnail: content.ThumbnailURL},
-				//Thumbnail: content.BigthumbnailURL,
+				// Thumbnail: content.BigthumbnailURL,
 			}
 			files = append(files, &f)
 		}

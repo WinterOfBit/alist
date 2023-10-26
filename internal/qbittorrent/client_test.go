@@ -17,7 +17,7 @@ func TestLogin(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	var c = &client{
+	c := &client{
 		url:    u,
 		client: http.Client{Jar: jar},
 	}
@@ -49,7 +49,7 @@ func TestAuthorized(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	var c = &client{
+	c := &client{
 		url:    u,
 		client: http.Client{Jar: jar},
 	}

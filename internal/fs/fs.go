@@ -2,6 +2,7 @@ package fs
 
 import (
 	"context"
+
 	"github.com/alist-org/alist/v3/internal/driver"
 	"github.com/alist-org/alist/v3/internal/model"
 	"github.com/alist-org/alist/v3/internal/op"
@@ -108,8 +109,7 @@ func PutAsTask(dstDirPath string, file model.FileStreamer) error {
 	return err
 }
 
-type GetStoragesArgs struct {
-}
+type GetStoragesArgs struct{}
 
 func GetStorage(path string, args *GetStoragesArgs) (driver.Driver, error) {
 	storageDriver, _, err := op.GetStorageAndActualPath(path)

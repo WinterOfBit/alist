@@ -39,7 +39,7 @@ func (d *S3) getClient(link bool) *s3.S3 {
 			if r.HTTPRequest.Method != http.MethodGet {
 				return
 			}
-			//判断CustomHost是否以http://或https://开头
+			// 判断CustomHost是否以http://或https://开头
 			split := strings.SplitN(d.CustomHost, "://", 2)
 			if utils.SliceContains([]string{"http", "https"}, split[0]) {
 				r.HTTPRequest.URL.Scheme = split[0]
@@ -88,7 +88,7 @@ func (d *S3) listV1(prefix string, args model.ListArgs) ([]model.Obj, error) {
 		for _, object := range listObjectsResult.CommonPrefixes {
 			name := path.Base(strings.Trim(*object.Prefix, "/"))
 			file := model.Object{
-				//Id:        *object.Key,
+				// Id:        *object.Key,
 				Name:     name,
 				Modified: d.Modified,
 				IsFolder: true,
@@ -101,7 +101,7 @@ func (d *S3) listV1(prefix string, args model.ListArgs) ([]model.Obj, error) {
 				continue
 			}
 			file := model.Object{
-				//Id:        *object.Key,
+				// Id:        *object.Key,
 				Name:     name,
 				Size:     *object.Size,
 				Modified: *object.LastModified,
@@ -140,7 +140,7 @@ func (d *S3) listV2(prefix string, args model.ListArgs) ([]model.Obj, error) {
 		for _, object := range listObjectsResult.CommonPrefixes {
 			name := path.Base(strings.Trim(*object.Prefix, "/"))
 			file := model.Object{
-				//Id:        *object.Key,
+				// Id:        *object.Key,
 				Name:     name,
 				Modified: d.Modified,
 				IsFolder: true,
@@ -156,7 +156,7 @@ func (d *S3) listV2(prefix string, args model.ListArgs) ([]model.Obj, error) {
 				continue
 			}
 			file := model.Object{
-				//Id:        *object.Key,
+				// Id:        *object.Key,
 				Name:     name,
 				Size:     *object.Size,
 				Modified: *object.LastModified,

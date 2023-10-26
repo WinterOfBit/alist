@@ -178,7 +178,6 @@ func (d *Pan115) Put(ctx context.Context, dstDir model.Obj, stream model.FileStr
 	}
 	// 分片上传
 	return d.UploadByMultipart(&fastInfo.UploadOSSParams, stream.GetSize(), stream, dirID)
-
 }
 
 var _ driver.Driver = (*Pan115)(nil)

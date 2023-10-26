@@ -3,8 +3,9 @@ package fs
 import (
 	"context"
 	"fmt"
-	"github.com/alist-org/alist/v3/internal/model"
 	"sync/atomic"
+
+	"github.com/alist-org/alist/v3/internal/model"
 
 	"github.com/alist-org/alist/v3/internal/errs"
 	"github.com/alist-org/alist/v3/internal/op"
@@ -30,8 +31,8 @@ func putAsTask(dstDirPath string, file model.FileStreamer) error {
 		if err != nil {
 			return errors.Wrapf(err, "failed to create temp file")
 		}
-		//file.SetReader(tempFile)
-		//file.SetTmpFile(tempFile)
+		// file.SetReader(tempFile)
+		// file.SetTmpFile(tempFile)
 	}
 	UploadTaskManager.Submit(task.WithCancelCtx(&task.Task[uint64]{
 		Name: fmt.Sprintf("upload %s to [%s](%s)", file.GetName(), storage.GetStorage().MountPath, dstDirActualPath),

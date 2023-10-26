@@ -6,6 +6,10 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"fmt"
+	"io"
+	"net/http"
+	"net/url"
+
 	"github.com/alist-org/alist/v3/drivers/base"
 	"github.com/alist-org/alist/v3/internal/driver"
 	"github.com/alist-org/alist/v3/internal/errs"
@@ -17,9 +21,6 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"github.com/go-resty/resty/v2"
 	log "github.com/sirupsen/logrus"
-	"io"
-	"net/http"
-	"net/url"
 )
 
 type Pan123 struct {
@@ -59,7 +60,7 @@ func (d *Pan123) List(ctx context.Context, dir model.Obj, args model.ListArgs) (
 
 func (d *Pan123) Link(ctx context.Context, file model.Obj, args model.LinkArgs) (*model.Link, error) {
 	if f, ok := file.(File); ok {
-		//var resp DownResp
+		// var resp DownResp
 		var headers map[string]string
 		if !utils.IsLocalIPAddr(args.IP) {
 			headers = map[string]string{

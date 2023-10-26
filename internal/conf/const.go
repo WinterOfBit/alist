@@ -58,7 +58,7 @@ const (
 	Token         = "token"
 	IndexProgress = "index_progress"
 
-	//SSO
+	// SSO
 	SSOClientId          = "sso_client_id"
 	SSOClientSecret      = "sso_client_secret"
 	SSOLoginEnabled      = "sso_login_enabled"
@@ -81,7 +81,7 @@ const (
 const (
 	UNKNOWN = iota
 	FOLDER
-	//OFFICE
+	// OFFICE
 	VIDEO
 	AUDIO
 	TEXT

@@ -4,12 +4,13 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"github.com/alist-org/alist/v3/internal/stream"
 	"io"
 	"net/url"
 	stdpath "path"
 	"strings"
 	"time"
+
+	"github.com/alist-org/alist/v3/internal/stream"
 
 	"github.com/alist-org/alist/v3/internal/driver"
 	"github.com/alist-org/alist/v3/internal/model"
@@ -69,7 +70,7 @@ func (d *S3) Link(ctx context.Context, file model.Obj, args model.LinkArgs) (*mo
 	input := &s3.GetObjectInput{
 		Bucket: &d.Bucket,
 		Key:    &path,
-		//ResponseContentDisposition: &disposition,
+		// ResponseContentDisposition: &disposition,
 	}
 	if d.CustomHost == "" {
 		input.ResponseContentDisposition = &disposition

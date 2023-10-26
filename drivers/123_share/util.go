@@ -18,7 +18,7 @@ const (
 	MainApi      = Api
 	FileList     = MainApi + "/share/get"
 	DownloadInfo = MainApi + "/share/download/info"
-	//AuthKeySalt      = "8-8D$sL8gPjom7bk#cY"
+	// AuthKeySalt      = "8-8D$sL8gPjom7bk#cY"
 )
 
 func (d *Pan123Share) request(url string, method string, callback base.ReqCallback, resp interface{}) ([]byte, error) {

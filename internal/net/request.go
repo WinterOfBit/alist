@@ -40,7 +40,7 @@ type Downloader struct {
 	// Concurrency of 1 will download the parts sequentially.
 	Concurrency int
 
-	//RequestParam        HttpRequestParams
+	// RequestParam        HttpRequestParams
 	HttpClient HttpRequestFunc
 }
 type HttpRequestFunc func(ctx context.Context, params *HttpRequestParams) (*http.Response, error)
@@ -63,7 +63,6 @@ func NewDownloader(options ...func(*Downloader)) *Downloader {
 // Supports range, do not support unknown FileSize, and will fail if FileSize is incorrect
 // memory usage is at about Concurrency*PartSize, use this wisely
 func (d Downloader) Download(ctx context.Context, p *HttpRequestParams) (readCloser io.ReadCloser, err error) {
-
 	var finalP HttpRequestParams
 	awsutil.Copy(&finalP, p)
 	if finalP.Range.Length == -1 {
@@ -92,17 +91,17 @@ type downloader struct {
 	cancel context.CancelFunc
 	cfg    Downloader
 
-	params       *HttpRequestParams //http request params
-	chunkChannel chan chunk         //chunk chanel
+	params       *HttpRequestParams // http request params
+	chunkChannel chan chunk         // chunk chanel
 
-	//wg sync.WaitGroup
+	// wg sync.WaitGroup
 	m sync.Mutex
 
-	nextChunk int //next chunk id
+	nextChunk int // next chunk id
 	chunks    []chunk
 	bufs      []*Buf
-	//totalBytes int64
-	written int64 //total bytes of file downloaded from remote
+	// totalBytes int64
+	written int64 // total bytes of file downloaded from remote
 	err     error
 
 	partBodyMaxRetries int
@@ -117,7 +116,7 @@ func (d *downloader) download() (io.ReadCloser, error) {
 	id := 0
 	for pos < maxPos {
 		finalSize := int64(d.cfg.PartSize)
-		//check boundary
+		// check boundary
 		if pos+finalSize > maxPos {
 			finalSize = maxPos - pos
 		}
@@ -156,6 +155,7 @@ func (d *downloader) download() (io.ReadCloser, error) {
 	// Return error
 	return rc, d.err
 }
+
 func (d *downloader) sendChunkTask() *chunk {
 	ch := &d.chunks[d.nextChunk]
 	ch.buf = d.getBuf(d.nextChunk)
@@ -182,10 +182,11 @@ func (d *downloader) interrupt() error {
 	}()
 	return d.err
 }
-func (d *downloader) getBuf(id int) (b *Buf) {
 
+func (d *downloader) getBuf(id int) (b *Buf) {
 	return d.bufs[id%d.cfg.Concurrency]
 }
+
 func (d *downloader) finishBuf(id int) (isLast bool, buf *Buf) {
 	if id >= len(d.chunks)-1 {
 		return true, nil
@@ -200,7 +201,7 @@ func (d *downloader) finishBuf(id int) (isLast bool, buf *Buf) {
 // downloadPart is an individual goroutine worker reading from the ch channel
 // and performing Http request on the data with a given byte range.
 func (d *downloader) downloadPart() {
-	//defer d.wg.Done()
+	// defer d.wg.Done()
 	for {
 		c, ok := <-d.chunkChannel
 		if !ok {
@@ -243,7 +244,7 @@ func (d *downloader) downloadChunk(ch *chunk) error {
 			return err
 		}
 
-		//ch.cur = 0
+		// ch.cur = 0
 
 		log.Debugf("object part body download interrupted %s, err, %v, retrying attempt %d",
 			params.URL, err, retry)
@@ -251,19 +252,18 @@ func (d *downloader) downloadChunk(ch *chunk) error {
 
 	d.incrWritten(n)
 	log.Debugf("down_%d downloaded chunk", ch.id)
-	//ch.buf.buffer.wg1.Wait()
-	//log.Debugf("down_%d downloaded chunk,wg wait passed", ch.id)
+	// ch.buf.buffer.wg1.Wait()
+	// log.Debugf("down_%d downloaded chunk,wg wait passed", ch.id)
 	return err
 }
 
 func (d *downloader) tryDownloadChunk(params *HttpRequestParams, ch *chunk) (int64, error) {
-
 	resp, err := d.cfg.HttpClient(d.ctx, params)
 	if err != nil {
 		return 0, err
 	}
 	defer resp.Body.Close()
-	//only check file size on the first task
+	// only check file size on the first task
 	if ch.id == 0 {
 		err = d.checkTotalBytes(resp)
 		if err != nil {
@@ -272,7 +272,6 @@ func (d *downloader) tryDownloadChunk(params *HttpRequestParams, ch *chunk) (int
 	}
 
 	n, err := io.Copy(ch.buf, resp.Body)
-
 	if err != nil {
 		return n, &errReadingBody{err: err}
 	}
@@ -283,6 +282,7 @@ func (d *downloader) tryDownloadChunk(params *HttpRequestParams, ch *chunk) (int
 
 	return n, nil
 }
+
 func (d *downloader) getParamsFromChunk(ch *chunk) *HttpRequestParams {
 	var params HttpRequestParams
 	awsutil.Copy(&params, d.params)
@@ -330,7 +330,6 @@ func (d *downloader) checkTotalBytes(resp *http.Response) error {
 		d.setErr(err)
 	}
 	return err
-
 }
 
 func (d *downloader) incrWritten(n int64) {
@@ -368,7 +367,7 @@ type chunk struct {
 
 	// Downloader takes range (start,length), but this chunk is requesting equal/sub range of it.
 	// To convert the writer to reader eventually, we need to write within the boundary
-	//boundary http_range.Range
+	// boundary http_range.Range
 }
 
 func DefaultHttpRequestFunc(ctx context.Context, params *HttpRequestParams) (*http.Response, error) {
@@ -383,10 +382,10 @@ func DefaultHttpRequestFunc(ctx context.Context, params *HttpRequestParams) (*ht
 
 type HttpRequestParams struct {
 	URL string
-	//only want data within this range
+	// only want data within this range
 	Range     http_range.Range
 	HeaderRef http.Header
-	//total file size
+	// total file size
 	Size int64
 }
 type errReadingBody struct {
@@ -408,12 +407,14 @@ type MultiReadCloser struct {
 }
 
 type cfg struct {
-	rPos   int //current reader position, start from 0
+	rPos   int // current reader position, start from 0
 	curBuf *Buf
 }
 
-type closerFunc func() error
-type finishBufFUnc func(id int) (isLast bool, buf *Buf)
+type (
+	closerFunc    func() error
+	finishBufFUnc func(id int) (isLast bool, buf *Buf)
+)
 
 // NewMultiReadCloser to save memory, we re-use limited Buf, and feed data to Read()
 func NewMultiReadCloser(buf *Buf, c closerFunc, fb finishBufFUnc) *MultiReadCloser {
@@ -425,7 +426,7 @@ func (mr MultiReadCloser) Read(p []byte) (n int, err error) {
 		return 0, io.EOF
 	}
 	n, err = mr.cfg.curBuf.Read(p)
-	//log.Debugf("read_%d read current buffer, n=%d ,err=%+v", mr.cfg.rPos, n, err)
+	// log.Debugf("read_%d read current buffer, n=%d ,err=%+v", mr.cfg.rPos, n, err)
 	if err == io.EOF {
 		log.Debugf("read_%d finished current buffer", mr.cfg.rPos)
 
@@ -435,18 +436,19 @@ func (mr MultiReadCloser) Read(p []byte) (n int, err error) {
 		}
 		mr.cfg.curBuf = next
 		mr.cfg.rPos++
-		//current.Close()
+		// current.Close()
 		return n, nil
 	}
 	return n, err
 }
+
 func (mr MultiReadCloser) Close() error {
 	return mr.closer()
 }
 
 type Buf struct {
 	buffer *bytes.Buffer
-	size   int //expected size
+	size   int // expected size
 	ctx    context.Context
 	off    int
 	rw     sync.RWMutex
@@ -458,8 +460,8 @@ type Buf struct {
 func NewBuf(ctx context.Context, maxSize int, id int) *Buf {
 	d := make([]byte, 0, maxSize)
 	return &Buf{ctx: ctx, buffer: bytes.NewBuffer(d), size: maxSize, notify: make(chan struct{})}
-
 }
+
 func (br *Buf) Reset(size int) {
 	br.buffer.Reset()
 	br.size = size

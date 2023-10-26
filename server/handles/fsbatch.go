@@ -195,7 +195,6 @@ func FsRegexRename(c *gin.Context) {
 	}
 
 	for _, file := range files {
-
 		if srcRegexp.MatchString(file.GetName()) {
 			filePath := fmt.Sprintf("%s/%s", reqPath, file.GetName())
 			newFileName := srcRegexp.ReplaceAllString(file.GetName(), req.NewNameRegex)
@@ -204,7 +203,6 @@ func FsRegexRename(c *gin.Context) {
 				return
 			}
 		}
-
 	}
 
 	common.SuccessResp(c)

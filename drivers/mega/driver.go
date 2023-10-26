@@ -4,10 +4,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/alist-org/alist/v3/pkg/http_range"
-	"github.com/rclone/rclone/lib/readers"
 	"io"
 	"time"
+
+	"github.com/alist-org/alist/v3/pkg/http_range"
+	"github.com/rclone/rclone/lib/readers"
 
 	"github.com/alist-org/alist/v3/internal/driver"
 	"github.com/alist-org/alist/v3/internal/errs"

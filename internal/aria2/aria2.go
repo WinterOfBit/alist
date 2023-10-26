@@ -12,9 +12,11 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var DownTaskManager = task.NewTaskManager[string](3)
-var notify = NewNotify()
-var client rpc.Client
+var (
+	DownTaskManager = task.NewTaskManager[string](3)
+	notify          = NewNotify()
+	client          rpc.Client
+)
 
 func InitClient(timeout int) (string, error) {
 	client = nil

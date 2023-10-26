@@ -29,7 +29,7 @@ func Proxy(w http.ResponseWriter, r *http.Request, link *model.Link, file model.
 	} else if link.Concurrency != 0 || link.PartSize != 0 {
 		attachFileName(w, file)
 		size := file.GetSize()
-		//var finalClosers model.Closers
+		// var finalClosers model.Closers
 		finalClosers := utils.EmptyClosers()
 		header := net.ProcessHeader(r.Header, link.Header)
 		rangeReader := func(ctx context.Context, httpRange http_range.Range) (io.ReadCloser, error) {
@@ -51,7 +51,7 @@ func Proxy(w http.ResponseWriter, r *http.Request, link *model.Link, file model.
 		defer finalClosers.Close()
 		return nil
 	} else {
-		//transparent proxy
+		// transparent proxy
 		header := net.ProcessHeader(r.Header, link.Header)
 		res, err := net.RequestHttp(context.Background(), r.Method, header, link.URL)
 		if err != nil {
@@ -73,6 +73,7 @@ func Proxy(w http.ResponseWriter, r *http.Request, link *model.Link, file model.
 		return nil
 	}
 }
+
 func attachFileName(w http.ResponseWriter, file model.Obj) {
 	fileName := file.GetName()
 	w.Header().Set("Content-Disposition", fmt.Sprintf(`attachment; filename="%s"; filename*=UTF-8''%s`, fileName, url.PathEscape(fileName)))

@@ -200,7 +200,7 @@ func (d *QuarkOrUC) Put(ctx context.Context, dstDir model.Obj, stream model.File
 		left -= int64(len(bytes))
 		log.Debugf("left: %d", left)
 		m, err := d.upPart(ctx, pre, stream.GetMimetype(), partNumber, bytes)
-		//m, err := driver.UpPart(pre, file.GetMIMEType(), partNumber, bytes, account, md5Str, sha1Str)
+		// m, err := driver.UpPart(pre, file.GetMIMEType(), partNumber, bytes, account, md5Str, sha1Str)
 		if err != nil {
 			return err
 		}

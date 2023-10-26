@@ -2,7 +2,6 @@ package aria2
 
 import (
 	"fmt"
-	"github.com/alist-org/alist/v3/internal/stream"
 	"os"
 	"path"
 	"path/filepath"
@@ -10,6 +9,8 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
+
+	"github.com/alist-org/alist/v3/internal/stream"
 
 	"github.com/alist-org/alist/v3/internal/model"
 	"github.com/alist-org/alist/v3/internal/op"
@@ -151,7 +152,7 @@ func (m *Monitor) Complete() error {
 			log.Errorf("failed to remove aria2 temp dir: %+v", err.Error())
 		}
 	}()
-	for i, _ := range files {
+	for i := range files {
 		file := files[i]
 		TransferTaskManager.Submit(task.WithCancelCtx(&task.Task[uint64]{
 			Name: fmt.Sprintf("transfer %s to [%s](%s)", file.Path, storage.GetStorage().MountPath, dstDirActualPath),

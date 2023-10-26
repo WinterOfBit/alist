@@ -349,7 +349,6 @@ func (d *BaiduPhoto) linkAlbum(ctx context.Context, file *AlbumFile, args model.
 			"uk":           fmt.Sprint(file.Uk),
 		}).
 		Head(ALBUM_API_URL + "/download")
-
 	if err != nil {
 		return nil, err
 	}
@@ -446,7 +445,6 @@ func (d *BaiduPhoto) linkFile(ctx context.Context, file *File, args model.LinkAr
 func (d *BaiduPhoto) uInfo() (*UInfo, error) {
 	var info UInfo
 	_, err := d.Get(USER_API_URL+"/getuinfo", func(req *resty.Request) {
-
 	}, &info)
 	if err != nil {
 		return nil, err

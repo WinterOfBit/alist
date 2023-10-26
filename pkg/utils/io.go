@@ -5,9 +5,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"golang.org/x/exp/constraints"
 	"io"
 	"time"
+
+	"golang.org/x/exp/constraints"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -176,10 +177,11 @@ func (c *Closers) Close() error {
 	}
 	return errors.Join(errs...)
 }
+
 func (c *Closers) Add(closer io.Closer) {
 	c.closers = append(c.closers, closer)
-
 }
+
 func (c *Closers) AddClosers(closers Closers) {
 	c.closers = append(c.closers, closers.closers...)
 }
@@ -187,6 +189,7 @@ func (c *Closers) AddClosers(closers Closers) {
 func EmptyClosers() Closers {
 	return Closers{[]io.Closer{}}
 }
+
 func NewClosers(c ...io.Closer) Closers {
 	return Closers{c}
 }
@@ -197,6 +200,7 @@ func Min[T constraints.Ordered](a, b T) T {
 	}
 	return b
 }
+
 func Max[T constraints.Ordered](a, b T) T {
 	if a < b {
 		return b

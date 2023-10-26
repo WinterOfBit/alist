@@ -82,7 +82,7 @@ type Media struct {
 
 type UploadTaskData struct {
 	UploadType string `json:"upload_type"`
-	//UPLOAD_TYPE_RESUMABLE
+	// UPLOAD_TYPE_RESUMABLE
 	Resumable *struct {
 		Kind   string `json:"kind"`
 		Params struct {

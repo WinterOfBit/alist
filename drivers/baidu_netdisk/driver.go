@@ -187,7 +187,7 @@ func (d *BaiduNetdisk) Put(ctx context.Context, dstDir model.Obj, stream model.F
 		lastBlockSize = sliceSize
 	}
 
-	//cal md5 for first 256k data
+	// cal md5 for first 256k data
 	const SliceSize int64 = 256 * 1024
 	// cal md5
 	blockList := make([]string, 0, count)
@@ -244,7 +244,7 @@ func (d *BaiduNetdisk) Put(ctx context.Context, dstDir model.Obj, stream model.F
 		}
 		log.Debugf("%+v", precreateResp)
 		if precreateResp.ReturnType == 2 {
-			//rapid upload, since got md5 match from baidu server
+			// rapid upload, since got md5 match from baidu server
 			if err != nil {
 				return nil, err
 			}

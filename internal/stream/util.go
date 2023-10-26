@@ -17,7 +17,7 @@ func GetRangeReadCloserFromLink(size int64, link *model.Link) (model.RangeReadCl
 	if len(link.URL) == 0 {
 		return nil, fmt.Errorf("can't create RangeReadCloser since URL is empty in link")
 	}
-	//remoteClosers := utils.EmptyClosers()
+	// remoteClosers := utils.EmptyClosers()
 	rangeReaderFunc := func(ctx context.Context, r http_range.Range) (io.ReadCloser, error) {
 		if link.Concurrency != 0 || link.PartSize != 0 {
 			header := net.ProcessHeader(http.Header{}, link.Header)

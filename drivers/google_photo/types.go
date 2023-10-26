@@ -26,7 +26,7 @@ type MediaItem struct {
 	CoverPhotoBaseUrl string        `json:"coverPhotoBaseUrl,omitempty"`
 	MimeType          string        `json:"mimeType,omitempty"`
 	FileName          string        `json:"filename,omitempty"`
-	MediaMetadata MediaMetadata     `json:"mediaMetadata,omitempty"`
+	MediaMetadata     MediaMetadata `json:"mediaMetadata,omitempty"`
 }
 
 type MediaMetadata struct {
@@ -37,14 +37,12 @@ type MediaMetadata struct {
 	Video        Video     `json:"video,omitempty"`
 }
 
-type Photo struct {
-}
+type Photo struct{}
 
-type Video struct {
-}
+type Video struct{}
 
 func fileToObj(f MediaItem) *model.ObjThumb {
-	if !reflect.DeepEqual(f.MediaMetadata, MediaMetadata{}){
+	if !reflect.DeepEqual(f.MediaMetadata, MediaMetadata{}) {
 		return &model.ObjThumb{
 			Object: model.Object{
 				ID:       f.Id,

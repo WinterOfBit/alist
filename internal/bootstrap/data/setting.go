@@ -103,7 +103,8 @@ func InitialSettings() []model.SettingItem {
 		{Key: conf.ProxyTypes, Value: "m3u8", Type: conf.TypeText, Group: model.PREVIEW, Flag: model.PRIVATE},
 		{Key: conf.ProxyIgnoreHeaders, Value: "authorization,referer", Type: conf.TypeText, Group: model.PREVIEW, Flag: model.PRIVATE},
 		{Key: "external_previews", Value: `{}`, Type: conf.TypeText, Group: model.PREVIEW},
-		{Key: "iframe_previews", Value: `{
+		{
+			Key: "iframe_previews", Value: `{
 	"doc,docx,xls,xlsx,ppt,pptx": {
 		"Microsoft":"https://view.officeapps.live.com/op/view.aspx?src=$e_url",
 		"Google":"https://docs.google.com/gview?url=$e_url&embedded=true"
@@ -114,7 +115,8 @@ func InitialSettings() []model.SettingItem {
 	"epub": {
 		"EPUB.js":"https://alist-org.github.io/static/epub.js/viewer.html?url=$e_url"
 	}
-}`, Type: conf.TypeText, Group: model.PREVIEW},
+}`, Type: conf.TypeText, Group: model.PREVIEW,
+		},
 		//		{Key: conf.OfficeViewers, Value: `{
 		//	"Microsoft":"https://view.officeapps.live.com/op/view.aspx?src=$url",
 		//	"Google":"https://docs.google.com/gview?url=$url&embedded=true",
@@ -132,10 +134,12 @@ func InitialSettings() []model.SettingItem {
 		{Key: conf.CustomizeBody, Type: conf.TypeText, Group: model.GLOBAL, Flag: model.PRIVATE},
 		{Key: conf.LinkExpiration, Value: "0", Type: conf.TypeNumber, Group: model.GLOBAL, Flag: model.PRIVATE},
 		{Key: conf.SignAll, Value: "false", Type: conf.TypeBool, Group: model.GLOBAL, Flag: model.PRIVATE},
-		{Key: conf.PrivacyRegs, Value: `(?:(?:\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.){3}(?:\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])
+		{
+			Key: conf.PrivacyRegs, Value: `(?:(?:\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.){3}(?:\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])
 ([[:xdigit:]]{1,4}(?::[[:xdigit:]]{1,4}){7}|::|:(?::[[:xdigit:]]{1,4}){1,6}|[[:xdigit:]]{1,4}:(?::[[:xdigit:]]{1,4}){1,5}|(?:[[:xdigit:]]{1,4}:){2}(?::[[:xdigit:]]{1,4}){1,4}|(?:[[:xdigit:]]{1,4}:){3}(?::[[:xdigit:]]{1,4}){1,3}|(?:[[:xdigit:]]{1,4}:){4}(?::[[:xdigit:]]{1,4}){1,2}|(?:[[:xdigit:]]{1,4}:){5}:[[:xdigit:]]{1,4}|(?:[[:xdigit:]]{1,4}:){1,6}:)
 (?U)access_token=(.*)&`,
-			Type: conf.TypeText, Group: model.GLOBAL, Flag: model.PRIVATE},
+			Type: conf.TypeText, Group: model.GLOBAL, Flag: model.PRIVATE,
+		},
 		{Key: conf.OcrApi, Value: "https://api.nn.ci/ocr/file/json", Type: conf.TypeString, Group: model.GLOBAL},
 		{Key: conf.FilenameCharMapping, Value: `{"/": "|"}`, Type: conf.TypeText, Group: model.GLOBAL},
 		{Key: conf.ForwardDirectLinkParams, Value: "false", Type: conf.TypeBool, Group: model.GLOBAL},

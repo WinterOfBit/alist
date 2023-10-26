@@ -5,11 +5,6 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
-	"github.com/alist-org/alist/v3/internal/model"
-	"github.com/alist-org/alist/v3/pkg/http_range"
-	"github.com/alist-org/alist/v3/pkg/utils"
-	"github.com/aliyun/aliyun-oss-go-sdk/oss"
-	"github.com/orzogc/fake115uploader/cipher"
 	"io"
 	"net/url"
 	"path/filepath"
@@ -17,6 +12,12 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/alist-org/alist/v3/internal/model"
+	"github.com/alist-org/alist/v3/pkg/http_range"
+	"github.com/alist-org/alist/v3/pkg/utils"
+	"github.com/aliyun/aliyun-oss-go-sdk/oss"
+	"github.com/orzogc/fake115uploader/cipher"
 
 	"github.com/SheltonZhu/115driver/pkg/driver"
 	driver115 "github.com/SheltonZhu/115driver/pkg/driver"
@@ -313,11 +314,13 @@ LOOP:
 	}
 	return d.checkUploadStatus(dirID, params.SHA1)
 }
+
 func chunksProducer(ch chan oss.FileChunk, chunks []oss.FileChunk) {
 	for _, chunk := range chunks {
 		ch <- chunk
 	}
 }
+
 func (d *Pan115) checkUploadStatus(dirID, sha1 string) error {
 	// 验证上传是否成功
 	req := d.client.NewRequest().ForceContentType("application/json;charset=UTF-8")
@@ -374,8 +377,8 @@ func SplitFileByPartNum(fileSize int64, chunkNum int) ([]oss.FileChunk, error) {
 	}
 
 	var chunks []oss.FileChunk
-	var chunk = oss.FileChunk{}
-	var chunkN = (int64)(chunkNum)
+	chunk := oss.FileChunk{}
+	chunkN := (int64)(chunkNum)
 	for i := int64(0); i < chunkN; i++ {
 		chunk.Number = int(i + 1)
 		chunk.Offset = i * (fileSize / chunkN)
@@ -397,13 +400,13 @@ func SplitFileByPartSize(fileSize int64, chunkSize int64) ([]oss.FileChunk, erro
 		return nil, errors.New("chunkSize invalid")
 	}
 
-	var chunkN = fileSize / chunkSize
+	chunkN := fileSize / chunkSize
 	if chunkN >= 10000 {
 		return nil, errors.New("Too many parts, please increase part size")
 	}
 
 	var chunks []oss.FileChunk
-	var chunk = oss.FileChunk{}
+	chunk := oss.FileChunk{}
 	for i := int64(0); i < chunkN; i++ {
 		chunk.Number = int(i + 1)
 		chunk.Offset = i * chunkSize

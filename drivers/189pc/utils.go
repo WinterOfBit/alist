@@ -181,6 +181,7 @@ func (y *Cloud189PC) put(ctx context.Context, url string, headers map[string]str
 	}
 	return body, nil
 }
+
 func (y *Cloud189PC) getFiles(ctx context.Context, fileId string) ([]model.Obj, error) {
 	fullUrl := API_URL
 	if y.isFamily() {
@@ -438,7 +439,7 @@ func (y *Cloud189PC) refreshSession() (err error) {
 // 普通上传
 // 无法上传大小为0的文件
 func (y *Cloud189PC) StreamUpload(ctx context.Context, dstDir model.Obj, file model.FileStreamer, up driver.UpdateProgress) (model.Obj, error) {
-	var sliceSize = partSize(file.GetSize())
+	sliceSize := partSize(file.GetSize())
 	count := int(math.Ceil(float64(file.GetSize()) / float64(sliceSize)))
 	lastPartSize := file.GetSize() % sliceSize
 	if file.GetSize() > 0 && lastPartSize == 0 {
@@ -458,7 +459,7 @@ func (y *Cloud189PC) StreamUpload(ctx context.Context, dstDir model.Obj, file mo
 		params.Set("familyId", y.FamilyID)
 		fullUrl += "/family"
 	} else {
-		//params.Set("extend", `{"opScene":"1","relativepath":"","rootfolderid":""}`)
+		// params.Set("extend", `{"opScene":"1","relativepath":"","rootfolderid":""}`)
 		fullUrl += "/person"
 	}
 
@@ -571,14 +572,14 @@ func (y *Cloud189PC) FastUpload(ctx context.Context, dstDir model.Obj, file mode
 		return nil, err
 	}
 
-	var sliceSize = partSize(file.GetSize())
+	sliceSize := partSize(file.GetSize())
 	count := int(math.Ceil(float64(file.GetSize()) / float64(sliceSize)))
 	lastSliceSize := file.GetSize() % sliceSize
 	if file.GetSize() > 0 && lastSliceSize == 0 {
 		lastSliceSize = sliceSize
 	}
 
-	//step.1 优先计算所需信息
+	// step.1 优先计算所需信息
 	byteSize := sliceSize
 	fileMd5 := md5.New()
 	silceMd5 := md5.New()
@@ -612,14 +613,14 @@ func (y *Cloud189PC) FastUpload(ctx context.Context, dstDir model.Obj, file mode
 	if y.isFamily() {
 		fullUrl += "/family"
 	} else {
-		//params.Set("extend", `{"opScene":"1","relativepath":"","rootfolderid":""}`)
+		// params.Set("extend", `{"opScene":"1","relativepath":"","rootfolderid":""}`)
 		fullUrl += "/person"
 	}
 
 	// 尝试恢复进度
 	uploadProgress, ok := base.GetUploadProgress[*UploadProgress](y, y.tokenInfo.SessionKey, fileMd5Hex)
 	if !ok {
-		//step.2 预上传
+		// step.2 预上传
 		params := Params{
 			"parentFolderId": dstDir.GetID(),
 			"fileName":       url.QueryEscape(file.GetName()),
@@ -850,7 +851,6 @@ func (y *Cloud189PC) OldUploadCreate(ctx context.Context, parentID string, fileM
 			})
 		}
 	}, &uploadInfo)
-
 	if err != nil {
 		return nil, err
 	}

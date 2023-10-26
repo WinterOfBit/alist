@@ -1,12 +1,13 @@
 package _123
 
 import (
-	"github.com/alist-org/alist/v3/pkg/utils"
 	"net/url"
 	"path"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/alist-org/alist/v3/pkg/utils"
 
 	"github.com/alist-org/alist/v3/internal/model"
 )
@@ -76,8 +77,10 @@ func (f File) Thumb() string {
 	return du.String()
 }
 
-var _ model.Obj = (*File)(nil)
-var _ model.Thumb = (*File)(nil)
+var (
+	_ model.Obj   = (*File)(nil)
+	_ model.Thumb = (*File)(nil)
+)
 
 //func (f File) Thumb() string {
 //
@@ -85,7 +88,7 @@ var _ model.Thumb = (*File)(nil)
 //var _ model.Thumb = (*File)(nil)
 
 type Files struct {
-	//BaseResp
+	// BaseResp
 	Data struct {
 		InfoList []File `json:"InfoList"`
 		Next     string `json:"Next"`
@@ -100,7 +103,7 @@ type Files struct {
 //}
 
 type UploadResp struct {
-	//BaseResp
+	// BaseResp
 	Data struct {
 		AccessKeyId     string `json:"AccessKeyId"`
 		Bucket          string `json:"Bucket"`

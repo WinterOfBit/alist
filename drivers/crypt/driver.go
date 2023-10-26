@@ -3,11 +3,12 @@ package crypt
 import (
 	"context"
 	"fmt"
-	"github.com/alist-org/alist/v3/internal/stream"
 	"io"
 	stdpath "path"
 	"regexp"
 	"strings"
+
+	"github.com/alist-org/alist/v3/internal/stream"
 
 	"github.com/alist-org/alist/v3/internal/driver"
 	"github.com/alist-org/alist/v3/internal/errs"
@@ -41,7 +42,7 @@ func (d *Crypt) GetAddition() driver.Additional {
 }
 
 func (d *Crypt) Init(ctx context.Context) error {
-	//obfuscate credentials if it's updated or just created
+	// obfuscate credentials if it's updated or just created
 	err := d.updateObfusParm(&d.Password)
 	if err != nil {
 		return fmt.Errorf("failed to obfuscate password: %w", err)
@@ -60,7 +61,7 @@ func (d *Crypt) Init(ctx context.Context) error {
 
 	op.MustSaveDriverStorage(d)
 
-	//need remote storage exist
+	// need remote storage exist
 	storage, err := fs.GetStorage(d.RemotePath, &fs.GetStoragesArgs{})
 	if err != nil {
 		return fmt.Errorf("can't find remote storage: %w", err)
@@ -106,8 +107,8 @@ func (d *Crypt) Drop(ctx context.Context) error {
 
 func (d *Crypt) List(ctx context.Context, dir model.Obj, args model.ListArgs) ([]model.Obj, error) {
 	path := dir.GetPath()
-	//return d.list(ctx, d.RemotePath, path)
-	//remoteFull
+	// return d.list(ctx, d.RemotePath, path)
+	// remoteFull
 
 	objs, err := fs.List(ctx, d.getPathForRemote(path, true), &fs.ListArgs{NoLog: true})
 	// the obj must implement the model.SetPath interface
@@ -121,7 +122,7 @@ func (d *Crypt) List(ctx context.Context, dir model.Obj, args model.ListArgs) ([
 		if obj.IsDir() {
 			name, err := d.cipher.DecryptDirName(obj.GetName())
 			if err != nil {
-				//filter illegal files
+				// filter illegal files
 				continue
 			}
 			objRes := model.Object{
@@ -137,12 +138,12 @@ func (d *Crypt) List(ctx context.Context, dir model.Obj, args model.ListArgs) ([
 			thumb, ok := model.GetThumb(obj)
 			size, err := d.cipher.DecryptedSize(obj.GetSize())
 			if err != nil {
-				//filter illegal files
+				// filter illegal files
 				continue
 			}
 			name, err := d.cipher.DecryptFileName(obj.GetName())
 			if err != nil {
-				//filter illegal files
+				// filter illegal files
 				continue
 			}
 			objRes := model.Object{
@@ -154,7 +155,7 @@ func (d *Crypt) List(ctx context.Context, dir model.Obj, args model.ListArgs) ([
 				// discarding hash as it's encrypted
 			}
 			if d.Thumbnail && thumb == "" {
-				thumb = utils.EncodePath(common.GetApiUrl(nil) + stdpath.Join("/d", args.ReqPath, ".thumbnails", name+".webp"), true)
+				thumb = utils.EncodePath(common.GetApiUrl(nil)+stdpath.Join("/d", args.ReqPath, ".thumbnails", name+".webp"), true)
 			}
 			if !ok && !d.Thumbnail {
 				result = append(result, &objRes)
@@ -189,7 +190,7 @@ func (d *Crypt) Get(ctx context.Context, path string) (model.Obj, error) {
 	remoteObj, err = fs.Get(ctx, remoteFullPath, &fs.GetArgs{NoLog: true})
 	if err != nil {
 		if errs.IsObjectNotFound(err) && secondTry {
-			//try the opposite
+			// try the opposite
 			remoteFullPath = d.getPathForRemote(path, !firstTryIsFolder)
 			remoteObj, err2 = fs.Get(ctx, remoteFullPath, &fs.GetArgs{NoLog: true})
 			if err2 != nil {
@@ -227,7 +228,7 @@ func (d *Crypt) Get(ctx context.Context, path string) (model.Obj, error) {
 		IsFolder: remoteObj.IsDir(),
 	}
 	return obj, nil
-	//return nil, errs.ObjectNotFound
+	// return nil, errs.ObjectNotFound
 }
 
 func (d *Crypt) Link(ctx context.Context, file model.Obj, args model.LinkArgs) (*model.Link, error) {
@@ -257,14 +258,14 @@ func (d *Crypt) Link(ctx context.Context, file model.Obj, args model.LinkArgs) (
 				URL:    remoteLink.URL,
 				Header: remoteLink.Header,
 			}
-			var converted, err = stream.GetRangeReadCloserFromLink(remoteFileSize, rangedRemoteLink)
+			converted, err := stream.GetRangeReadCloserFromLink(remoteFileSize, rangedRemoteLink)
 			if err != nil {
 				return nil, err
 			}
 			rrc = converted
 		}
 		if rrc != nil {
-			//remoteRangeReader, err :=
+			// remoteRangeReader, err :=
 			remoteReader, err := rrc.RangeRead(ctx, http_range.Range{Start: underlyingOffset, Length: length})
 			remoteClosers.AddClosers(rrc.GetClosers())
 			if err != nil {
@@ -277,14 +278,13 @@ func (d *Crypt) Link(ctx context.Context, file model.Obj, args model.LinkArgs) (
 			if err != nil {
 				return nil, err
 			}
-			//remoteClosers.Add(remoteLink.MFile)
-			//keep reuse same MFile and close at last.
+			// remoteClosers.Add(remoteLink.MFile)
+			// keep reuse same MFile and close at last.
 			remoteClosers.Add(remoteLink.MFile)
 			return io.NopCloser(remoteLink.MFile), nil
 		}
 
 		return nil, errs.NotSupport
-
 	}
 	resultRangeReader := func(ctx context.Context, httpRange http_range.Range) (io.ReadCloser, error) {
 		readSeeker, err := d.cipher.DecryptDataSeek(ctx, rangeReaderFunc, httpRange.Start, httpRange.Length)
@@ -302,7 +302,6 @@ func (d *Crypt) Link(ctx context.Context, file model.Obj, args model.LinkArgs) (
 	}
 
 	return resultLink, nil
-
 }
 
 func (d *Crypt) MakeDir(ctx context.Context, parentDir model.Obj, dirName string) error {
@@ -350,7 +349,6 @@ func (d *Crypt) Copy(ctx context.Context, srcObj, dstDir model.Obj) error {
 		return fmt.Errorf("failed to convert path to remote path: %w", err)
 	}
 	return op.Copy(ctx, d.remoteStorage, srcRemoteActualPath, dstRemoteActualPath)
-
 }
 
 func (d *Crypt) Remove(ctx context.Context, obj model.Obj) error {

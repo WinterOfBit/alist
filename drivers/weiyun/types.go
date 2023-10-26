@@ -1,8 +1,9 @@
 package weiyun
 
 import (
-	"github.com/alist-org/alist/v3/pkg/utils"
 	"time"
+
+	"github.com/alist-org/alist/v3/pkg/utils"
 
 	weiyunsdkgo "github.com/foxxorcat/weiyun-sdk-go"
 )
@@ -22,6 +23,7 @@ func (f *File) GetPath() string    { return "" }
 func (f *File) GetPKey() string {
 	return f.PFolder.DirKey
 }
+
 func (f *File) CreateTime() time.Time {
 	return time.Time(f.FileCtime)
 }
