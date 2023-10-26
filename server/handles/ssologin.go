@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 	"path"
@@ -185,13 +186,12 @@ func OIDCLoginCallback(c *gin.Context) {
 	if useCompatibility {
 		argument = path.Base(c.Request.URL.Path)
 	}
-	clientId := setting.GetStr(conf.SSOClientId)
+
+	sp := strings.Split(argument, "?code=")
+	argument = sp[0]
+	code := sp[1]
+
 	endpoint := setting.GetStr(conf.SSOEndpointName)
-	provider, err := oidc.NewProvider(c, endpoint)
-	if err != nil {
-		common.ErrorResp(c, err, 400)
-		return
-	}
 	oauth2Config, err := GetOIDCClient(c)
 	if err != nil {
 		common.ErrorResp(c, err, 400)
@@ -208,30 +208,28 @@ func OIDCLoginCallback(c *gin.Context) {
 		return
 	}
 
-	oauth2Token, err := oauth2Config.Exchange(c, c.Query("code"))
+	oauth2Token, err := oauth2Config.Exchange(c, code)
 	if err != nil {
 		common.ErrorResp(c, err, 400)
 		return
 	}
-	rawIDToken, ok := oauth2Token.Extra("id_token").(string)
-	if !ok {
-		common.ErrorStrResp(c, "no id_token found in oauth2 token", 400)
-		return
-	}
-	verifier := provider.Verifier(&oidc.Config{
-		ClientID: clientId,
-	})
-	_, err = verifier.Verify(c, rawIDToken)
+
+	accessToken := oauth2Token.AccessToken
+	userInfoURL := endpoint + "/api/oauth/userinfo"
+	resp, err := http.Get(userInfoURL + "?access_token=" + accessToken)
 	if err != nil {
 		common.ErrorResp(c, err, 400)
 		return
 	}
-	payload, err := parseJWT(rawIDToken)
+	defer resp.Body.Close()
+	payload, err := io.ReadAll(resp.Body)
 	if err != nil {
 		common.ErrorResp(c, err, 400)
 		return
 	}
-	userID := utils.Json.Get(payload, conf.SSOOIDCUsernameKey).ToString()
+
+	userID := utils.Json.Get(payload, setting.GetStr(conf.SSOOIDCUsernameKey)).ToString()
+
 	if userID == "" {
 		common.ErrorStrResp(c, "cannot get username from OIDC provider", 400)
 		return
@@ -243,12 +241,12 @@ func OIDCLoginCallback(c *gin.Context) {
 		}
 		html := fmt.Sprintf(`<!DOCTYPE html>
 				<head></head>
-				<body>
+				<payload>
 				<script>
 				window.opener.postMessage({"sso_id": "%s"}, "*")
 				window.close()
 				</script>
-				</body>`, userID)
+				</payload>`, userID)
 		c.Data(200, "text/html; charset=utf-8", []byte(html))
 		return
 	}
@@ -270,12 +268,12 @@ func OIDCLoginCallback(c *gin.Context) {
 		}
 		html := fmt.Sprintf(`<!DOCTYPE html>
 				<head></head>
-				<body>
+				<payload>
 				<script>
 				window.opener.postMessage({"token":"%s"}, "*")
 				window.close()
 				</script>
-				</body>`, token)
+				</payload>`, token)
 		c.Data(200, "text/html; charset=utf-8", []byte(html))
 		return
 	}
@@ -294,6 +292,8 @@ func SSOLoginCallback(c *gin.Context) {
 				argument = path.Base(c.Request.URL.Path)
 			}
 	*/
+
+	argument = strings.Split(argument, "?")[0]
 	if !utils.SliceContains([]string{"get_sso_id", "sso_get_token"}, argument) {
 		common.ErrorResp(c, errors.New("invalid request"), 500)
 		return
